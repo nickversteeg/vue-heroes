@@ -5,10 +5,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "chrome",
+      "type": "pwa-msedge",
       "request": "launch",
-      "name": "Vue: Chrome",
-      "url": "http://localhost:9626",
+      "name": "Vue: Edge",
+      "url": "http://localhost:8080",
       "webRoot": "${workspaceFolder}/src",
       "breakOnLoad": true,
       "sourceMapPathOverrides": {
