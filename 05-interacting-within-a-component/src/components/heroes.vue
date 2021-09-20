@@ -27,7 +27,7 @@
       <div class="column is-4" v-if="selectedHero">
         <div class="card">
           <header class="card-header">
-            <p class="card-header-title">{{ selectedHero.firstName }}</p>
+            <p class="card-header-title">{{ fullName }}</p>
           </header>
           <div class="card-content">
             <div class="content">
@@ -61,6 +61,32 @@
                   v-model="selectedHero.description"
                 />
               </div>
+              <div class="field">
+                <label class="label" for="originDate">origin date</label>
+                <input
+                  type="date"
+                  class="input"
+                  id="originDate"
+                  v-model="selectedHero.originDate"
+                />
+                <p class="comment">
+                  My origin story began on
+                  {{ selectedHero.originDate | shortDate }}
+                </p>
+              </div>
+              <div class="field">
+                <label class="label" for="capeCounter">capeCounter</label>
+                <input
+                  class="input"
+                  id="capeCounter"
+                  type="number"
+                  v-model="selectedHero.capeCounter"
+                />
+              </div>
+              <div class="field">
+                <label class="label" for="capeMessage">capeMessage</label>
+                <label for="capeMessage" class="input">{{ capeMessage }}</label>
+              </div>
             </div>
           </div>
           <footer class="card-footer">
@@ -83,35 +109,68 @@
 </template>
 
 <script>
+import { format } from 'date-fns';
+const inputDateFormat = 'YYYY-MM-DD';
+const displayDateFormat = 'MMM DD, YYYY';
 const ourHeroes = [
   {
     id: 10,
     firstName: 'Ella',
     lastName: 'Papa',
     description: 'fashionista',
+    capeCounter: 1,
+    originDate: format(new Date(2000, 9, 1), inputDateFormat),
   },
   {
     id: 20,
     firstName: 'Madelyn',
     lastName: 'Papa',
     description: 'the cat whisperer',
+    capeCounter: 2,
+    originDate: format(new Date(2000, 9, 2), inputDateFormat),
   },
   {
     id: 30,
     firstName: 'Haley',
     lastName: 'Papa',
     description: 'pen wielder',
+    capeCounter: 3,
+    originDate: format(new Date(2000, 9, 4), inputDateFormat),
   },
   {
     id: 40,
     firstName: 'Landon',
     lastName: 'Papa',
     description: 'arc trooper',
+    capeCounter: 0,
+    originDate: format(new Date(2000, 9, 3), inputDateFormat),
   },
 ];
 export default {
   name: 'Heroes',
+  data() {
+    return {
+      heroes: ourHeroes,
+      selectedHero: undefined,
+      message: '',
+      capeMessage: '',
+      originDate: undefined,
+    };
+  },
   methods: {
+    async getHeroes() {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve(ourHeroes);
+        }, 1500);
+      });
+    },
+    async loadHeroes() {
+      this.heroes = [];
+      this.message = 'Getting heroes...';
+      this.heroes = await this.getHeroes();
+      this.message = '';
+    },
     handleTheCapes(newValue) {
       const value = parseInt(newValue, 10);
       switch (value) {
@@ -139,6 +198,29 @@ export default {
     },
     selectHero(hero) {
       this.selectedHero = hero;
+    },
+  },
+  computed: {
+    fullName: {
+      get() {
+        return `${this.selectedHero.firstName} ${this.selectedHero.lastName}`;
+      },
+    },
+  },
+  created() {
+    this.loadHeroes();
+  },
+  watch: {
+    'selectedHero.capeCounter': {
+      immediate: true,
+      handler(newValue) {
+        this.handleTheCapes(newValue);
+      },
+    },
+  },
+  filters: {
+    shortDate: function(value) {
+      return format(value, displayDateFormat);
     },
   },
 };
