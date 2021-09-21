@@ -1,7 +1,10 @@
 .DS_Store
 node_modules
 /dist
+/**/dist
 /**/vue-heroes/dist
+/vue-heroes/**/dist
+/**/vue-heroes/**/dist
 
 # local env files
 .env.local
