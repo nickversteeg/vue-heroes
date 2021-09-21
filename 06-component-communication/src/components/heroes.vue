@@ -31,7 +31,12 @@
           <!-- <heroes-list> -->
 
           <!-- <hero-detail> -->
-          <HeroDetail v-if="selectedHero" :hero="selectedHero" />
+          <HeroDetail
+            v-if="selectedHero"
+            :hero="selectedHero"
+            @save="saveHero"
+            @cancel="cancelHero"
+          />
           <!-- </hero-detail> -->
 
           <div class="notification is-info" v-show="message">{{ message }}</div>
@@ -43,7 +48,6 @@
 
 <script>
 import { ourHeroes } from '../shared';
-
 import HeroDetail from '@/components/hero-detail';
 
 export default {
@@ -62,13 +66,6 @@ export default {
   created() {
     this.loadHeroes();
   },
-  computed: {
-    fullName() {
-      return this.selectedHero
-        ? `${this.selectedHero.firstName} ${this.selectedHero.lastName}`
-        : '';
-    },
-  },
   methods: {
     async getHeroes() {
       return new Promise(resolve => {
@@ -84,42 +81,14 @@ export default {
     cancelHero() {
       this.selectedHero = undefined;
     },
-    saveHero() {
-      const index = this.heroes.findIndex(h => h.id === this.selectedHero.id);
-      this.heroes.splice(index, 1, this.selectedHero);
+    saveHero(hero) {
+      const index = this.heroes.findIndex(h => h.id === hero.id);
+      this.heroes.splice(index, 1, hero);
       this.heroes = [...this.heroes];
       this.selectedHero = undefined;
     },
     selectHero(hero) {
       this.selectedHero = hero;
-    },
-    handleTheCapes(newValue) {
-      const value = parseInt(newValue, 10);
-      switch (value) {
-        case 0:
-          this.capeMessage = 'Where is my cape?';
-          break;
-        case 1:
-          this.capeMessage = 'One is all I need';
-          break;
-        case 2:
-          this.capeMessage = 'Alway have a spare';
-          break;
-        default:
-          this.capeMessage = 'You can never have enough capes';
-          break;
-      }
-    },
-  },
-  watch: {
-    'selectedHero.capeCounter': {
-      immediate: true,
-      handler(newValue, oldValue) {
-        console.log(
-          `CapeCounter watcher evalauted. old=${oldValue}, new=${newValue}`
-        );
-        this.handleTheCapes(newValue);
-      },
     },
   },
 };
