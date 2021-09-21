@@ -31,13 +31,7 @@
           <!-- <heroes-list> -->
 
           <!-- <hero-detail> -->
-          <HeroDetail
-            v-if="selectedHero"
-            :hero="selectedHero"
-            :fullName="fullName"
-            :capeMessage="capeMessage"
-          />
-
+          <HeroDetail v-if="selectedHero" :hero="selectedHero" />
           <!-- </hero-detail> -->
 
           <div class="notification is-info" v-show="message">{{ message }}</div>
